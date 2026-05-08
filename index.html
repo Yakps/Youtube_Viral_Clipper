@@ -3,143 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ViralBot — YouTube Klip Analizörü</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>YouTube Viral Clipper</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
   --bg:      #0a0a0a;
-  --bg2:     #111111;
-  --bg3:     #1a1a1a;
-  --bg4:     #222222;
-  --border:  rgba(255,255,255,0.08);
-  --border2: rgba(255,255,255,0.15);
-  --red:     #ff2d2d;
-  --red2:    #ff5555;
-  --red-dim: rgba(255,45,45,0.12);
-  --red-glow:rgba(255,45,45,0.22);
-  --text:    #f0f0f0;
-  --text2:   #888;
-  --text3:   #444;
-  --green:   #00e676;
-  --green-dim:rgba(0,230,118,0.12);
-  --amber:   #ffc107;
-  --amber-dim:rgba(255,193,7,0.12);
-  --mono:    'Space Mono', monospace;
-  --display: 'Syne', sans-serif;
+  --bg2:     #141414;
+  --bg3:     #1c1c1c;
+  --surface: #111111;
+  --border:  rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text:    #f0eeea;
+  --text2:   #888580;
+  --text3:   #444240;
+  --accent:  #e8380d;
+  --accent2: #ff5533;
+  --green:   #3ecf7a;
+  --green-bg:rgba(62,207,122,0.1);
+  --amber:   #f59e0b;
+  --amber-bg:rgba(245,158,11,0.1);
+  --red-bg:  rgba(232,56,13,0.1);
+  --mono:    'DM Mono', monospace;
+  --sans:    'DM Sans', sans-serif;
+  --radius:  10px;
 }
 
 body {
-  font-family: var(--display);
+  font-family: var(--sans);
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-}
-
-body::before {
-  content:'';
-  position:fixed;inset:0;
-  background-image:
-    linear-gradient(rgba(255,45,45,0.025) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,45,45,0.025) 1px,transparent 1px);
-  background-size:48px 48px;
-  pointer-events:none;
-  z-index:0;
+  -webkit-font-smoothing: antialiased;
 }
 
 .container {
-  max-width: 960px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 0 28px 80px;
-  position: relative;
-  z-index: 1;
+  padding: 0 24px 80px;
 }
 
 /* ── HEADER ── */
 header {
-  padding: 44px 0 36px;
+  padding: 40px 0 28px;
   display: flex;
   align-items: center;
-  gap: 18px;
+  justify-content: space-between;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 44px;
+  margin-bottom: 40px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .logo {
-  width: 50px; height: 50px;
-  background: var(--red);
-  border-radius: 12px;
+  width: 36px; height: 36px;
+  background: var(--accent);
+  border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 0 28px var(--red-glow);
 }
-.logo svg { width: 26px; height: 26px; fill: white; }
+.logo svg { width: 18px; height: 18px; fill: white; }
 
-.header-text h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
-.header-text h1 span { color: var(--red); }
-.header-text p { font-size: 12px; color: var(--text2); margin-top: 3px; font-family: var(--mono); }
+.brand-name {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: var(--text);
+}
+.brand-name span { color: var(--accent); }
 
 .ws-badge {
-  margin-left: auto;
-  display: flex; align-items: center; gap: 7px;
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
   border-radius: 999px;
-  padding: 6px 14px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
   font-size: 11px;
   font-family: var(--mono);
-  border: 1px solid var(--border2);
-  color: var(--text2);
-  background: var(--bg3);
-  transition: all 0.3s;
-  flex-shrink: 0;
+  color: var(--text3);
+  transition: all 0.25s;
 }
-.ws-badge.connected { background: var(--green-dim); border-color: rgba(0,230,118,0.3); color: var(--green); }
-.ws-badge.error     { background: var(--red-dim);   border-color: rgba(255,45,45,0.3);  color: var(--red2); }
+.ws-badge.connected { background: var(--green-bg); border-color: rgba(62,207,122,0.3); color: var(--green); }
+.ws-badge.error     { background: var(--red-bg);   border-color: rgba(232,56,13,0.3);  color: var(--accent2); }
 
 .dot {
-  width: 7px; height: 7px;
+  width: 6px; height: 6px;
   border-radius: 50%;
   background: currentColor;
+  flex-shrink: 0;
 }
-.dot.pulse { animation: pulse 1.8s infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+.dot.pulse { animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
 /* ── STATS ── */
 .stats-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 36px;
+  gap: 8px;
+  margin-bottom: 32px;
 }
 
 .stat-card {
-  background: var(--bg2);
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius);
   padding: 14px 16px;
 }
-.stat-label { font-size: 10px; font-family: var(--mono); color: var(--text3); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px; }
-.stat-value { font-size: 22px; font-weight: 800; line-height: 1; }
-.stat-value.red   { color: var(--red); }
-.stat-value.green { color: var(--green); }
-.stat-value.amber { color: var(--amber); }
+.stat-label {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1;
+}
+.stat-value.accent { color: var(--accent); }
+.stat-value.green  { color: var(--green); }
 
 /* ── INPUT ── */
-.input-section { margin-bottom: 32px; }
+.input-section { margin-bottom: 28px; }
 
 .input-label {
-  font-size: 10px; font-family: var(--mono); color: var(--text3);
-  text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
 }
 
-.url-row { display: flex; gap: 10px; }
+.url-row { display: flex; gap: 8px; }
 
 .url-input {
   flex: 1;
-  background: var(--bg3);
+  background: var(--surface);
   border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 13px 18px;
+  border-radius: var(--radius);
+  padding: 11px 16px;
   font-size: 13px;
   font-family: var(--mono);
   color: var(--text);
@@ -147,242 +158,295 @@ header {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .url-input::placeholder { color: var(--text3); }
-.url-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-dim); }
+.url-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(232,56,13,0.08);
+}
 
 .submit-btn {
-  background: var(--red);
+  background: var(--accent);
   color: white;
   border: none;
-  border-radius: 10px;
-  padding: 13px 22px;
+  border-radius: var(--radius);
+  padding: 11px 20px;
   font-size: 13px;
-  font-weight: 700;
-  font-family: var(--display);
+  font-weight: 600;
+  font-family: var(--sans);
   cursor: pointer;
-  transition: background 0.15s, transform 0.1s, box-shadow 0.2s;
-  display: flex; align-items: center; gap: 7px;
+  transition: background 0.15s, transform 0.1s;
+  display: flex; align-items: center; gap: 6px;
   white-space: nowrap;
-  box-shadow: 0 0 20px var(--red-dim);
 }
-.submit-btn:hover   { background: var(--red2); box-shadow: 0 0 30px var(--red-glow); }
+.submit-btn:hover   { background: var(--accent2); }
 .submit-btn:active  { transform: scale(0.97); }
-.submit-btn:disabled { background: var(--bg4); color: var(--text3); cursor: not-allowed; box-shadow: none; }
+.submit-btn:disabled {
+  background: var(--bg3);
+  color: var(--text3);
+  cursor: not-allowed;
+}
 
 /* ── PIPELINE ── */
 .pipeline {
   display: grid;
-  grid-template-columns: repeat(5,1fr);
-  background: var(--bg2);
+  grid-template-columns: repeat(5, 1fr);
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius);
   overflow: hidden;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
 .step {
-  padding: 14px 10px;
-  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
   border-right: 1px solid var(--border);
-  transition: background 0.35s;
-  position: relative;
+  transition: background 0.3s;
 }
 .step:last-child { border-right: none; }
-.step.active  { background: var(--red-dim); }
-.step.done    { background: var(--green-dim); }
+.step.active { background: rgba(232,56,13,0.08); }
+.step.done   { background: var(--green-bg); }
 
 .step-icon {
-  width: 34px; height: 34px;
-  border-radius: 8px;
-  background: var(--bg4);
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  background: var(--bg2);
   display: flex; align-items: center; justify-content: center;
-  font-size: 15px;
-  transition: background 0.35s, box-shadow 0.35s;
+  font-size: 13px;
+  transition: background 0.3s;
 }
-.step.active .step-icon { background: var(--red); box-shadow: 0 0 14px var(--red-glow); }
-.step.done   .step-icon { background: rgba(0,230,118,0.18); }
+.step.active .step-icon { background: var(--accent); }
+.step.done   .step-icon { background: rgba(62,207,122,0.18); }
 
-.step-name { font-size: 9px; font-family: var(--mono); color: var(--text2); text-align: center; line-height: 1.3; }
-.step.active .step-name { color: var(--red2); }
+.step-name {
+  font-size: 9px;
+  font-family: var(--mono);
+  color: var(--text3);
+  text-align: center;
+  line-height: 1.4;
+}
+.step.active .step-name { color: var(--accent); }
 .step.done   .step-name { color: var(--green); }
 
-/* ── VIDEO INFO BAR ── */
+/* ── VIDEO BAR ── */
 .video-bar {
   display: none;
   align-items: center;
-  gap: 14px;
-  background: var(--bg2);
+  gap: 12px;
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 18px;
-  margin-bottom: 24px;
-  animation: fadeIn 0.3s ease;
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  animation: fadeUp 0.3s ease;
 }
 .video-bar.show { display: flex; }
+
 .vi-icon {
-  width: 38px; height: 38px;
-  background: var(--red-dim);
-  border-radius: 8px;
+  width: 34px; height: 34px;
+  background: var(--red-bg);
+  border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.vi-icon svg { width: 18px; height: 18px; fill: var(--red); }
-.vi-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
-.vi-meta  { font-size: 11px; font-family: var(--mono); color: var(--text2); }
+.vi-icon svg { width: 16px; height: 16px; fill: var(--accent); }
+.vi-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.vi-meta  { font-size: 11px; font-family: var(--mono); color: var(--text3); }
 
 /* ── LOG BOX ── */
 .log-box {
   display: none;
-  background: var(--bg2);
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 18px 20px;
-  margin-bottom: 32px;
-  max-height: 280px;
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 28px;
+  max-height: 260px;
   overflow-y: auto;
 }
 .log-box.show { display: block; }
-.log-box::-webkit-scrollbar { width: 4px; }
+.log-box::-webkit-scrollbar { width: 3px; }
 .log-box::-webkit-scrollbar-track { background: transparent; }
 .log-box::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
 
-.log-header { font-size: 9px; font-family: var(--mono); color: var(--text3); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+.log-header {
+  font-size: 9px;
+  font-family: var(--mono);
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 10px;
+}
 
 .log-line {
-  display: flex; gap: 10px; align-items: flex-start;
-  font-size: 11px; font-family: var(--mono); color: var(--text2);
-  margin-bottom: 5px;
-  animation: fadeIn 0.25s ease;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text2);
+  margin-bottom: 4px;
+  animation: fadeUp 0.2s ease;
 }
-@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(3px)} to{opacity:1;transform:none} }
 
 .log-ts  { color: var(--text3); flex-shrink: 0; }
-.log-msg { }
 .log-line.success .log-msg { color: var(--green); }
-.log-line.error   .log-msg { color: var(--red); }
+.log-line.error   .log-msg { color: var(--accent); }
 .log-line.info    .log-msg { color: var(--amber); }
 
 /* ── CLIPS ── */
 .clips-section { display: none; }
 .clips-section.show { display: block; }
 
-.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
-.section-title  { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text2); }
-
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text2);
+  font-family: var(--mono);
+}
 .count-badge {
-  background: var(--red-dim);
-  color: var(--red2);
-  border: 1px solid rgba(255,45,45,0.25);
-  border-radius: 999px;
-  padding: 2px 10px;
   font-size: 10px;
   font-family: var(--mono);
+  color: var(--accent2);
+  background: var(--red-bg);
+  border: 1px solid rgba(232,56,13,0.25);
+  border-radius: 999px;
+  padding: 3px 10px;
 }
 
 .clips-grid {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .clip-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  animation: fadeUp 0.3s ease both;
+  transition: border-color 0.2s;
+}
+.clip-card:hover { border-color: var(--border2); }
+
+.clip-num-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--bg2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--mono);
+  color: var(--text2);
+  flex-shrink: 0;
+}
+
+.clip-body { flex: 1; min-width: 0; }
+.clip-label {
+  font-size: 9px;
+  font-family: var(--mono);
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
+}
+.clip-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.clip-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.meta-tag {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--text2);
   background: var(--bg2);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
-  transition: border-color 0.2s, transform 0.15s;
-  animation: slideUp 0.4s ease backwards;
+  border-radius: 4px;
+  padding: 2px 8px;
 }
-@keyframes slideUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
-.clip-card:hover { border-color: var(--border2); transform: translateY(-2px); }
-
-.clip-thumb {
-  height: 88px;
-  background: var(--bg3);
-  display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
+.meta-tag.time { color: var(--accent2); background: var(--red-bg); border-color: rgba(232,56,13,0.25); }
+.clip-reason {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.5;
 }
-.thumb-num { font-size: 40px; font-weight: 800; color: rgba(255,255,255,0.03); position: absolute; font-family: var(--display); }
-.thumb-icon {
-  width: 40px; height: 40px;
-  background: var(--red);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 18px var(--red-glow);
-  z-index: 1;
-}
-.thumb-icon svg { width: 18px; height: 18px; fill: white; }
 
-.clip-body { padding: 14px; }
-.clip-num   { font-size: 9px; font-family: var(--mono); color: var(--red); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
-.clip-title { font-size: 12px; font-weight: 600; line-height: 1.4; margin-bottom: 10px; }
-
-.clip-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
-.meta-tag  { font-size: 9px; font-family: var(--mono); padding: 3px 7px; border-radius: 5px; background: var(--bg4); color: var(--text2); }
-.meta-tag.time { color: var(--amber); background: var(--amber-dim); }
-
-.clip-reason { font-size: 11px; color: var(--text2); line-height: 1.5; border-top: 1px solid var(--border); padding-top: 10px; }
-
-/* ── FOLDER DONE ── */
+/* ── DONE BAR ── */
 .done-bar {
   display: none;
   align-items: center;
-  gap: 12px;
-  background: var(--green-dim);
-  border: 1px solid rgba(0,230,118,0.25);
-  border-radius: 10px;
-  padding: 14px 18px;
-  margin-top: 20px;
-  font-size: 12px;
+  gap: 10px;
+  background: var(--green-bg);
+  border: 1px solid rgba(62,207,122,0.25);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  font-size: 13px;
   font-family: var(--mono);
   color: var(--green);
+  animation: fadeUp 0.3s ease;
 }
 .done-bar.show { display: flex; }
-.done-bar svg  { width: 18px; height: 18px; flex-shrink: 0; }
-
-/* ── RESPONSIVE ── */
-@media(max-width:640px){
-  .stats-row   { grid-template-columns: repeat(2,1fr); }
-  .pipeline    { grid-template-columns: repeat(3,1fr); }
-  .clips-grid  { grid-template-columns: 1fr; }
-  .url-row     { flex-direction: column; }
-}
+.done-bar svg { width: 16px; height: 16px; stroke: var(--green); flex-shrink: 0; }
 </style>
 </head>
 <body>
+
 <div class="container">
 
   <!-- HEADER -->
   <header>
-    <div class="logo">
-      <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.19 8.19 0 004.79 1.53V6.77a4.85 4.85 0 01-1.02-.08z"/></svg>
-    </div>
-    <div class="header-text">
-      <h1>Viral<span>Bot</span></h1>
-      <p>youtube → whisper → gpt-4o → ffmpeg → klip</p>
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24"><path d="M10 15l5.19-3L10 9v6zm11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
+      </div>
+      <span class="brand-name">YouTube <span>Viral Clipper</span></span>
     </div>
     <div class="ws-badge" id="ws-badge">
-      <div class="dot"></div>
-      <span id="ws-label">BAĞLANIYOR</span>
+      <div class="dot" id="ws-dot"></div>
+      <span id="ws-label">bağlanıyor</span>
     </div>
   </header>
 
   <!-- STATS -->
   <div class="stats-row">
     <div class="stat-card">
-      <div class="stat-label">İşlenen Video</div>
-      <div class="stat-value red"   id="st-videos">0</div>
+      <div class="stat-label">Video</div>
+      <div class="stat-value accent" id="st-videos">0</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Kesilen Klip</div>
+      <div class="stat-label">Klip</div>
       <div class="stat-value green" id="st-clips">0</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Whisper Segment</div>
-      <div class="stat-value amber" id="st-segs">0</div>
+      <div class="stat-label">Segment</div>
+      <div class="stat-value" id="st-segs">0</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Son İşlem</div>
-      <div class="stat-value"       id="st-time">—</div>
+      <div class="stat-label">Süre</div>
+      <div class="stat-value" id="st-time">—</div>
     </div>
   </div>
 
@@ -390,10 +454,15 @@ header {
   <div class="input-section">
     <div class="input-label">YouTube URL</div>
     <div class="url-row">
-      <input type="text" class="url-input" id="url-input"
-             placeholder="https://youtube.com/watch?v=..."/>
+      <input
+        type="text"
+        class="url-input"
+        id="url-input"
+        placeholder="https://youtube.com/watch?v=..."
+        autocomplete="off"
+      />
       <button class="submit-btn" id="submit-btn" onclick="startProcess()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         Analiz Et
       </button>
     </div>
@@ -403,11 +472,11 @@ header {
   <div class="pipeline">
     <div class="step" id="step-1">
       <div class="step-icon">🔍</div>
-      <div class="step-name">Video Bilgisi</div>
+      <div class="step-name">Bilgi</div>
     </div>
     <div class="step" id="step-2">
-      <div class="step-icon">🎙️</div>
-      <div class="step-name">Ses İndir</div>
+      <div class="step-icon">🎵</div>
+      <div class="step-name">Ses</div>
     </div>
     <div class="step" id="step-3">
       <div class="step-icon">📝</div>
@@ -415,7 +484,7 @@ header {
     </div>
     <div class="step" id="step-4">
       <div class="step-icon">🤖</div>
-      <div class="step-name">GPT Analiz</div>
+      <div class="step-name">GPT</div>
     </div>
     <div class="step" id="step-5">
       <div class="step-icon">✂️</div>
@@ -436,7 +505,7 @@ header {
 
   <!-- LOG -->
   <div class="log-box" id="log-box">
-    <div class="log-header">// işlem günlüğü</div>
+    <div class="log-header">işlem günlüğü</div>
     <div id="log-lines"></div>
   </div>
 
@@ -456,77 +525,53 @@ header {
 </div>
 
 <script>
-// ─────────────────────────────────────────────
-// WebSocket bağlantısı
-// ─────────────────────────────────────────────
-
 const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
 const WS_URL = `${proto}//${location.host}/ws/process`;
 let ws = null;
 let processing = false;
 let startTime = null;
-
-// İstatistikler
-let totalVideos = 0;
-let totalClips  = 0;
-let totalSegs   = 0;
+let totalVideos = 0, totalClips = 0, totalSegs = 0;
 
 function connectWS() {
   const badge = document.getElementById('ws-badge');
   const label = document.getElementById('ws-label');
+  const dot   = document.getElementById('ws-dot');
 
   ws = new WebSocket(WS_URL);
 
   ws.onopen = () => {
     badge.className = 'ws-badge connected';
-    label.textContent = 'BAĞLI';
-    badge.querySelector('.dot').classList.add('pulse');
+    label.textContent = 'bağlı';
+    dot.classList.add('pulse');
   };
-
   ws.onclose = () => {
     badge.className = 'ws-badge error';
-    label.textContent = 'BAĞLANTI YOK';
-    badge.querySelector('.dot').classList.remove('pulse');
-    // 3 saniyede tekrar bağlan
+    label.textContent = 'bağlantı yok';
+    dot.classList.remove('pulse');
     setTimeout(connectWS, 3000);
   };
-
   ws.onerror = () => {
     badge.className = 'ws-badge error';
-    label.textContent = 'HATA';
+    label.textContent = 'hata';
   };
-
-  ws.onmessage = (e) => {
-    const msg = JSON.parse(e.data);
-    handleMessage(msg);
-  };
+  ws.onmessage = (e) => handleMessage(JSON.parse(e.data));
 }
-
-// ─────────────────────────────────────────────
-// Gelen mesaj yönlendirici
-// ─────────────────────────────────────────────
 
 function handleMessage(msg) {
   switch (msg.type) {
-    case 'log':         addLog(msg.msg, msg.level || 'default', msg.extra); break;
-    case 'step':        setStep(msg.step, msg.status);   break;
-    case 'video_info':  showVideoInfo(msg);               break;
-    case 'clips_preview': /* önizleme — opsiyonel */      break;
-    case 'done':        onDone(msg);                      break;
-    case 'error':       onError(msg.msg);                 break;
+    case 'log':          addLog(msg.msg, msg.level || 'default', msg.extra); break;
+    case 'step':         setStep(msg.step, msg.status); break;
+    case 'video_info':   showVideoInfo(msg); break;
+    case 'clips_preview': break;
+    case 'done':         onDone(msg); break;
+    case 'error':        onError(msg.msg); break;
   }
 }
 
-// ─────────────────────────────────────────────
-// UI güncelleyiciler
-// ─────────────────────────────────────────────
-
-function ts() {
-  return new Date().toTimeString().slice(0,8);
-}
+function ts() { return new Date().toTimeString().slice(0,8); }
 
 function addLog(msg, level = 'default', extra = null) {
-  const box   = document.getElementById('log-box');
+  const box = document.getElementById('log-box');
   const lines = document.getElementById('log-lines');
   box.classList.add('show');
 
@@ -536,7 +581,6 @@ function addLog(msg, level = 'default', extra = null) {
   lines.appendChild(line);
   lines.scrollTop = lines.scrollHeight;
 
-  // Whisper segment sayısı gelince stat'ı güncelle
   if (extra && extra.segments) {
     totalSegs += extra.segments;
     document.getElementById('st-segs').textContent = totalSegs;
@@ -544,24 +588,21 @@ function addLog(msg, level = 'default', extra = null) {
 }
 
 function setStep(n, status) {
-  const el = document.getElementById(`step-${n}`);
-  el.className = `step ${status}`;
+  document.getElementById(`step-${n}`).className = `step ${status}`;
 }
 
 function resetSteps() {
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= 5; i++)
     document.getElementById(`step-${i}`).className = 'step';
-  }
 }
 
 function showVideoInfo(msg) {
-  const bar = document.getElementById('video-bar');
   document.getElementById('vi-title').textContent = msg.title;
   const m = Math.floor(msg.duration / 60);
   const s = msg.duration % 60;
   document.getElementById('vi-meta').textContent =
-    `Süre: ${m}:${s.toString().padStart(2,'0')} · ${msg.url.slice(0,55)}`;
-  bar.classList.add('show');
+    `${m}:${s.toString().padStart(2,'0')} · ${msg.url.slice(0,55)}`;
+  document.getElementById('video-bar').classList.add('show');
 }
 
 function onDone(msg) {
@@ -570,30 +611,23 @@ function onDone(msg) {
   totalClips += results.length;
   document.getElementById('st-videos').textContent = totalVideos;
   document.getElementById('st-clips').textContent  = totalClips;
-
   if (startTime) {
-    const elapsed = Math.round((Date.now() - startTime) / 1000);
-    document.getElementById('st-time').textContent = elapsed + 's';
+    document.getElementById('st-time').textContent =
+      Math.round((Date.now() - startTime) / 1000) + 's';
   }
-
   renderClips(results);
   document.getElementById('done-msg').textContent =
     `${results.length} klip kaydedildi → ${msg.folder}`;
   document.getElementById('done-bar').classList.add('show');
-
   processing = false;
   document.getElementById('submit-btn').disabled = false;
 }
 
 function onError(msg) {
-  addLog('❌ ' + msg, 'error');
+  addLog('Hata: ' + msg, 'error');
   processing = false;
   document.getElementById('submit-btn').disabled = false;
 }
-
-// ─────────────────────────────────────────────
-// Klip kartları
-// ─────────────────────────────────────────────
 
 function fmt(sec) {
   const m = Math.floor(sec / 60);
@@ -612,16 +646,11 @@ function renderClips(results) {
   results.forEach((r, i) => {
     const card = document.createElement('div');
     card.className = 'clip-card';
-    card.style.animationDelay = `${i * 0.12}s`;
+    card.style.animationDelay = `${i * 0.1}s`;
     card.innerHTML = `
-      <div class="clip-thumb">
-        <span class="thumb-num">0${i+1}</span>
-        <div class="thumb-icon">
-          <svg viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </div>
-      </div>
+      <div class="clip-num-box">0${i+1}</div>
       <div class="clip-body">
-        <div class="clip-num">// KLİP 0${i+1}</div>
+        <div class="clip-label">Klip ${i+1}</div>
         <div class="clip-title">${escHtml(r.title)}</div>
         <div class="clip-meta">
           <span class="meta-tag time">${fmt(r.start)} → ${fmt(r.end)}</span>
@@ -636,25 +665,17 @@ function renderClips(results) {
   section.classList.add('show');
 }
 
-// ─────────────────────────────────────────────
-// Analizi başlat
-// ─────────────────────────────────────────────
-
 function startProcess() {
   if (processing) return;
 
   const url = document.getElementById('url-input').value.trim();
-  if (!url) {
-    addLog('URL boş olamaz', 'error');
-    return;
-  }
+  if (!url) { addLog('URL boş olamaz', 'error'); return; }
 
   if (!ws || ws.readyState !== WebSocket.OPEN) {
-    addLog('Sunucuya bağlı değil — lütfen bekleyin...', 'error');
+    addLog('Sunucuya bağlı değil — bekleyin...', 'error');
     return;
   }
 
-  // UI sıfırla
   processing = true;
   startTime  = Date.now();
   document.getElementById('submit-btn').disabled = true;
@@ -665,31 +686,18 @@ function startProcess() {
   document.getElementById('done-bar').classList.remove('show');
   resetSteps();
 
-  // Sunucuya gönder
   ws.send(JSON.stringify({ url }));
 }
-
-// ─────────────────────────────────────────────
-// Enter tuşu desteği
-// ─────────────────────────────────────────────
 
 document.getElementById('url-input').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') startProcess();
 });
-
-// ─────────────────────────────────────────────
-// XSS koruması
-// ─────────────────────────────────────────────
 
 function escHtml(str) {
   return String(str)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
-// ─────────────────────────────────────────────
-// Bağlan
-// ─────────────────────────────────────────────
 
 connectWS();
 </script>
