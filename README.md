@@ -1,5 +1,7 @@
-<img width="1438" height="767" alt="Ekran Resmi 2026-05-04 14 59 11" src="https://github.com/user-attachments/assets/0d7edf15-5091-4cf9-802a-1bf1a35f23df" />
-<img width="1440" height="760" alt="Ekran Resmi 2026-05-04 14 59 22" src="https://github.com/user-attachments/assets/f1083883-d3c4-42b8-bb7e-c3e031a008c8" />
+<img width="1438" height="767" alt="Ekran Resmi 2026-05-04 14 59 11" src="https://github.com/user-attachments/assets/24422375-1240-4a48-85d6-e28b1002350b" />
+
+<img width="1440" height="760" alt="Ekran Resmi 2026-05-04 14 59 22" src="https://github.com/user-attachments/assets/2dd95f66-699e-41bb-a78f-ca3c55829638" />
+
 
 # YouTube Viral Clipper
 
